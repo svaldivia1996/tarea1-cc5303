@@ -30,6 +30,6 @@ Un ejemplo de peticion POST para conectar el nodo 1 cuya ip es  (172.193.0.5 con
 `curl -X POST -H "Content-Type: application/json" -d '{"node_address": "172.19.0.5", "node_port": "8081"}' http://localhost:8083/connect `
 
 finalmente revisar en
-    http://localhost:8081/nodes
-    http://localhost:8083/nodes
+    -http://localhost:8081/nodes
+    -http://localhost:8083/nodes
 para verificar si fueron conectados.
