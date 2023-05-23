@@ -1,0 +1,56 @@
+version: '3'
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '8080:8080'
+    environment:
+      - PORT=8080
+    networks:
+      - mynetwork
+
+  nodo1:
+    image: my-flask-app
+    container_name: nodo1
+    ports:
+      - '8081:8080'
+    environment:
+      - PORT=8081
+    networks:
+      - mynetwork
+
+  nodo2:
+    image: my-flask-app
+    container_name: nodo2
+    ports:
+      - '8082:8080'
+    environment:
+      - PORT=8082
+    networks:
+      - mynetwork
+
+  nodo3:
+    image: my-flask-app
+    container_name: nodo3
+    ports:
+      - '8083:8080'
+    environment:
+      - PORT=8083
+    networks:
+      - mynetwork
+
+  nodo4:
+    image: my-flask-app
+    container_name: nodo4
+    ports:
+      - '8084:8080'
+    environment:
+      - PORT=8084
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge
