@@ -12,13 +12,13 @@ Hacer la imagen de app.py
 
 Luego crear los containers que son nuestros nodos
 Para caso de uso crear 4 nodos
-Ejemplo de nodo 1
+#### Ejemplo de nodo 1
     `docker run -d -p 8081:8080 -e PORT=8081 --name nodo1 --network=mynetwork my-flask-app`
-Ejemplo de nodo 2
+#### Ejemplo de nodo 2
     `docker run -d -p 8082:8080 -e PORT=8082 --name nodo2 --network=mynetwork my-flask-app`
-Ejemplo de nodo 3
+#### Ejemplo de nodo 3
     `docker run -d -p 8083:8080 -e PORT=8083 --name nodo3 --network=mynetwork my-flask-app`
-Ejemplo de nodo 4
+#### Ejemplo de nodo 4
     `docker run -d -p 8084:8080 -e PORT=8084 --name nodo4 --network=mynetwork my-flask-app`
 
 ## Para uso
