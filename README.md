@@ -28,13 +28,13 @@ Ejemplo de caso de uso para crear 4 nodos
 ## Para uso
 
 Luego para revisar los nodos vecinos por ejemplo del nodo 1, en un inicio solo se conocen a si mismos:
-http://localhost:8081/nodes
+http://localhost:8080/nodes
 
 En caso de crear un nodo y no conectarlo con otro se disponibilizo un POST request para conectar
 Un ejemplo de peticion POST para conectar el nodo 1 cuya ip es  (172.193.0.2 con puerto 8080) al nodo 2 (con port 8081):
 `curl -X POST -H "Content-Type: application/json" -d '{"node_address": "172.19.0.2", "node_port": "8080"}' http://localhost:8081/connect `
 
 finalmente revisar en
+    -http://localhost:8080/nodes
     -http://localhost:8081/nodes
-    -http://localhost:8083/nodes
 para verificar si fueron conectados.
