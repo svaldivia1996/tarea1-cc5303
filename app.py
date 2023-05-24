@@ -2,11 +2,13 @@ from flask import Flask, jsonify, request
 import requests
 import os
 import socket
+import threading
 
 app = Flask(__name__)
 
 # Lista para almacenar los nodos conocidos
 known_nodes = []
+neighbour_connected = False
 
 def get_container_ipv4_address():
     # Obtener el nombre de host del contenedor
@@ -36,17 +38,17 @@ def connect_node():
     try:
         response = requests.get(f'http://{node_address}:8080/nodes')
         node_list = response.json()
-        self_node_url = f"http://{container_ipv4}:{os.getenv('PORT', '8080')}"
+        self_node_url = f"http://{container_ipv4}:{os.getenv('MYPORT', '8080')}"
 
         for node in node_list:
             if node not in known_nodes:
                 known_nodes.append(node)
                 ip_nodo_vecino = node.split(':')[1].replace('//', '')
-                requests.post(f'http://{ip_nodo_vecino}:8080/connect', json={'node_address': container_ipv4, 'node_port': os.getenv('PORT', '8080')})
+                requests.post(f'http://{ip_nodo_vecino}:8080/connect', json={'node_address': container_ipv4, 'node_port': os.getenv('MYPORT', '8080')})
 
         if (f'http://{node_address}:{node_port}') not in known_nodes:
             known_nodes.append(f'http://{node_address}:{node_port}')
-            requests.post(f'http://{node_address}:8080/connect', json={'node_address': container_ipv4, 'node_port': os.getenv('PORT', '8080')})
+            requests.post(f'http://{node_address}:8080/connect', json={'node_address': container_ipv4, 'node_port': os.getenv('MYPORT', '8080')})
 
 
     except requests.exceptions.ConnectionError:
@@ -54,15 +56,24 @@ def connect_node():
 
     return jsonify(known_nodes), 200
 
+def send_last_post():
+    ip_nodo_vecino = os.getenv('IP', '')
+    if ip_nodo_vecino != '':
+        container_ipv4 = get_container_ipv4_address() 
+        requests.post(f'http://{ip_nodo_vecino}:8080/connect', json={'node_address': container_ipv4, 'node_port': os.getenv('MYPORT', '8080')})
+        print("Conectado al nodo vecino")
+
+
+def runapp():
+    container_ipv4 = get_container_ipv4_address()  # Obtiene la dirección IPv4 del contenedor
+    self_node_url = f"http://{container_ipv4}:{os.getenv('MYPORT', '8080')}"
+    known_nodes.append(self_node_url)
+    app.run(host='0.0.0.0', port=8080, debug=False)
+
+
 
 if __name__ == '__main__':
-    container_ipv4 = get_container_ipv4_address()  # Obtiene la dirección IPv4 del contenedor
-    self_node_url = f"http://{container_ipv4}:{os.getenv('PORT', '8080')}"
-    known_nodes.append(self_node_url)
-
-    # Conectarse a los nodos conocidos
-    """for node_url in known_nodes:
-        if node_url != self_node_url:
-            connect_to_known_node(node_url)"""
-
-    app.run(host='0.0.0.0', port=8080, debug=True)
+    first_thread = threading.Thread(target=runapp)
+    second_thread = threading.Thread(target=send_last_post)
+    first_thread.start()
+    second_thread.start()
